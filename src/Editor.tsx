@@ -1,16 +1,24 @@
 import { useAtom } from "jotai";
 import { editor } from "monaco-editor";
+import * as monaco from "monaco-editor";
 import { useEffect, useRef } from "react";
-import { codeAtom } from "./state";
+import { codeAtom, highlighterAtom } from "./state";
+import { shikiToMonaco } from "@shikijs/monaco";
 
 export default function Editor() {
 	const [_, setCode] = useAtom(codeAtom);
+	const [highlighter] = useAtom(highlighterAtom);
+
+	useEffect(() => {
+		shikiToMonaco(highlighter, monaco);
+	}, [highlighter]);
 
 	const mount = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		if (mount.current) {
 			const instance = editor.create(mount.current, {
 				language: "javascript",
+				theme: "vitesse-light",
 			});
 			const observer = new ResizeObserver((entries) => {
 				const entry = entries[entries.length - 1];
@@ -24,7 +32,6 @@ export default function Editor() {
 
 			instance.onDidChangeModelContent(() => {
 				setCode(instance.getValue());
-				console.log(instance.getValue());
 			});
 
 			return () => {

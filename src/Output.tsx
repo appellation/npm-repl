@@ -2,6 +2,7 @@ import { useAtom } from "jotai";
 import { useCallback, useState } from "react";
 import { Button } from "react-aria-components";
 import { codeAtom, webContainerAtom } from "./state";
+import AnsiCode from "./AnsiCode";
 
 export default function Output() {
 	const [code] = useAtom(codeAtom);
@@ -14,13 +15,10 @@ export default function Output() {
 		(async () => {
 			try {
 				await webContainer.fs.writeFile("index.mjs", code);
-				const process = await webContainer.spawn("node", ["index.mjs"], {
-					env: { NO_COLOR: true },
-				});
+				const process = await webContainer.spawn("node", ["index.mjs"]);
 				await process.output.pipeTo(
 					new WritableStream({
 						write(chunk) {
-							console.log(chunk);
 							setOutput((output) => output + chunk);
 						},
 					}),
@@ -32,9 +30,9 @@ export default function Output() {
 	}, [code, webContainer.fs.writeFile, webContainer.spawn]);
 
 	return (
-		<div>
+		<div className="overflow-auto">
 			<Button onPress={handleClick}>Run</Button>
-			<pre>{output}</pre>
+			<AnsiCode code={output} />
 		</div>
 	);
 }

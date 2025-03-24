@@ -4,23 +4,23 @@ import { type FormEvent, useCallback } from "react";
 import { Button, Form, Input, Label, TextField } from "react-aria-components";
 import { webContainerAtom } from "./state";
 import { readAll } from "./util";
+import AnsiCode from "./AnsiCode";
 
 function PackageList() {
 	const [webContainer] = useAtom(webContainerAtom);
 
-	const { data, error, isPending } = useQuery({
+	const { data } = useQuery({
 		queryKey: ["npm", "ls"],
 		async queryFn() {
-			const process = await webContainer.spawn("npm", ["ls", "--no-color"]);
+			const process = await webContainer.spawn("npm", ["ls"]);
 			const output = readAll(process.output, process.exit);
 
 			await process.exit;
 			return output;
 		},
 	});
-	console.log({ data, error, isPending });
 
-	return <pre>{data}</pre>;
+	return <AnsiCode code={data ?? ""} />;
 }
 
 export default function Packages() {
@@ -41,6 +41,7 @@ export default function Packages() {
 	const handleAddPackage = useCallback(
 		(e: FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
+			e.currentTarget.reset();
 
 			const data = new FormData(e.currentTarget);
 			mutate(data.get("name") as string);
@@ -54,7 +55,7 @@ export default function Packages() {
 			<Form onSubmit={handleAddPackage}>
 				<TextField>
 					<Label>Package Name</Label>
-					<Input name="name" />
+					<Input disabled={isPending} name="name" />
 				</TextField>
 				<Button type="submit" isPending={isPending}>
 					Add

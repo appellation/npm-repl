@@ -9,6 +9,7 @@
 		"preview": "rsbuild preview"
 	},
 	"dependencies": {
+		"@shikijs/monaco": "^3.2.1",
 		"@tanstack/react-query": "^5.69.0",
 		"@unocss/reset": "66.1.0-beta.6",
 		"@webcontainer/api": "1.5.1-internal.10",
@@ -18,7 +19,8 @@
 		"react": "^19.0.0",
 		"react-aria-components": "^1.7.1",
 		"react-dom": "^19.0.0",
-		"react-resizable-panels": "^2.1.7"
+		"react-resizable-panels": "^2.1.7",
+		"shiki": "^3.2.1"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
