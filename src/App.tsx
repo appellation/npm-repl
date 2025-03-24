@@ -1,9 +1,11 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import clsx from "clsx";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import Editor from "./Editor";
-import Output from "./Output";
-import Packages from "./Packages";
+import { lazy, Suspense } from "react";
+
+const Editor = lazy(() => import("./Editor"));
+const Output = lazy(() => import("./Output"));
+const Packages = lazy(() => import("./Packages"));
 
 const queryClient = new QueryClient();
 
@@ -18,23 +20,33 @@ function Handle({ direction }: { direction: "vertical" | "horizontal" }) {
 	);
 }
 
+function Loading() {
+	return <span>Loading</span>;
+}
+
 const App = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<div className="h-screen">
 				<PanelGroup direction="horizontal">
 					<Panel>
-						<Editor />
+						<Suspense fallback={<Loading />}>
+							<Editor />
+						</Suspense>
 					</Panel>
 					<Handle direction="vertical" />
 					<Panel>
 						<PanelGroup direction="vertical">
 							<Panel>
-								<Packages />
+								<Suspense fallback={<Loading />}>
+									<Packages />
+								</Suspense>
 							</Panel>
 							<Handle direction="horizontal" />
 							<Panel>
-								<Output />
+								<Suspense fallback={<Loading />}>
+									<Output />
+								</Suspense>
 							</Panel>
 						</PanelGroup>
 					</Panel>

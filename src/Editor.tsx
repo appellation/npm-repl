@@ -1,5 +1,5 @@
 import { shikiToMonaco } from "@shikijs/monaco";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { editor } from "monaco-editor";
 import * as monaco from "monaco-editor";
 import { useEffect, useRef } from "react";
@@ -7,7 +7,7 @@ import { codeAtom, highlighterAtom } from "./state";
 
 export default function Editor() {
 	const [code, setCode] = useAtom(codeAtom);
-	const [highlighter] = useAtom(highlighterAtom);
+	const highlighter = useAtomValue(highlighterAtom);
 
 	useEffect(() => {
 		shikiToMonaco(highlighter, monaco);

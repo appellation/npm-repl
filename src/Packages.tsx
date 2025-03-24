@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { type FormEvent, useCallback, useState } from "react";
 import { Button, Form, Input, Label, TextField } from "react-aria-components";
 import AnsiCode from "./AnsiCode";
@@ -7,7 +7,7 @@ import { webContainerAtom } from "./state";
 import { readAll } from "./util";
 
 function PackageList() {
-	const [webContainer] = useAtom(webContainerAtom);
+	const webContainer = useAtomValue(webContainerAtom);
 
 	const { data } = useQuery({
 		queryKey: ["npm", "ls"],
@@ -21,7 +21,7 @@ function PackageList() {
 }
 
 export default function Packages() {
-	const [webContainer] = useAtom(webContainerAtom);
+	const webContainer = useAtomValue(webContainerAtom);
 	const queryClient = useQueryClient();
 	const [installOutput, setInstallOutput] = useState("");
 

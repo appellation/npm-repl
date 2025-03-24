@@ -1,9 +1,9 @@
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { highlighterAtom } from "./state";
 
 export default function AnsiCode({ code }: { code: string }) {
-	const [highlighter] = useAtom(highlighterAtom);
+	const highlighter = useAtomValue(highlighterAtom);
 	const formatted = useMemo(
 		() =>
 			highlighter.codeToHtml(code, {

@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { atom, useAtom, useAtomValue } from "jotai";
+import { atom, useAtomValue } from "jotai";
 import type { PrimitiveAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import { Button } from "react-aria-components";
@@ -23,9 +23,10 @@ function RunBlock({ run }: { run: PrimitiveAtom<Run> }) {
 }
 
 export default function Output() {
-	const [code] = useAtom(codeAtom);
-	const [webContainer] = useAtom(webContainerAtom);
+	const code = useAtomValue(codeAtom);
+	const webContainer = useAtomValue(webContainerAtom);
 	const runsAtom = useMemo(() => atom<PrimitiveAtom<Run>[]>([]), []);
+	const runs = useAtomValue(runsAtom);
 
 	const { mutate } = useMutation({
 		async mutationFn(run: Run) {
@@ -63,8 +64,6 @@ export default function Output() {
 		document.addEventListener("keydown", listener);
 		return () => document.removeEventListener("keydown", listener);
 	});
-
-	const runs = useAtomValue(runsAtom);
 
 	return (
 		<div className="overflow-auto h-full flex flex-col-reverse">
