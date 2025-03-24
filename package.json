@@ -10,6 +10,7 @@
 	},
 	"dependencies": {
 		"@tanstack/react-query": "^5.69.0",
+		"@unocss/reset": "66.1.0-beta.6",
 		"@webcontainer/api": "1.5.1-internal.10",
 		"jotai": "^2.12.2",
 		"monaco-editor": "^0.52.2",
@@ -24,7 +25,9 @@
 		"@rsbuild/plugin-react": "^1.1.1",
 		"@types/react": "^19.0.10",
 		"@types/react-dom": "^19.0.4",
+		"@unocss/webpack": "66.1.0-beta.6",
 		"monaco-editor-webpack-plugin": "^7.1.0",
-		"typescript": "^5.8.2"
+		"typescript": "^5.8.2",
+		"unocss": "66.1.0-beta.6"
 	}
 }
