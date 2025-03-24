@@ -1,15 +1,8 @@
-import { useAtom } from "jotai";
-import { FormEvent, useCallback, useState } from "react";
-import { webContainerAtom } from "./state";
-import {
-  Button,
-  Form,
-  Input,
-  Label,
-  PressEvent,
-  TextField,
-} from "react-aria-components";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAtom } from "jotai";
+import { type FormEvent, useCallback } from "react";
+import { Button, Form, Input, Label, TextField } from "react-aria-components";
+import { webContainerAtom } from "./state";
 import { readAll } from "./util";
 
 function PackageList() {
@@ -18,12 +11,10 @@ function PackageList() {
   const { data, error, isPending } = useQuery({
     queryKey: ["npm", "ls"],
     async queryFn() {
-      console.log("aaaa");
       const process = await webContainer.spawn("npm", ["ls", "--no-color"]);
       const output = readAll(process.output, process.exit);
 
       await process.exit;
-      console.log("exited");
       return output;
     },
   });
@@ -36,22 +27,26 @@ export default function Packages() {
   const [webContainer] = useAtom(webContainerAtom);
   const queryClient = useQueryClient();
 
-  const { mutate, isPending, error } = useMutation({
+  const { mutate, isPending } = useMutation({
     async mutationFn(pkgName: string) {
       const process = await webContainer.spawn("npm", ["install", pkgName]);
       return process.exit;
     },
     async onSuccess() {
+      // @ts-expect-error tanstack query incorrect types
       await queryClient.invalidateQueries([{ queryKey: ["npm", "ls"] }]);
     },
   });
 
-  const handleAddPackage = useCallback((e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleAddPackage = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
 
-    const data = new FormData(e.currentTarget);
-    mutate(data.get("name")! as string);
-  }, []);
+      const data = new FormData(e.currentTarget);
+      mutate(data.get("name") as string);
+    },
+    [mutate]
+  );
 
   return (
     <div>
