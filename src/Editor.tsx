@@ -3,8 +3,6 @@ import { editor } from "monaco-editor";
 import { useEffect, useRef } from "react";
 import { codeAtom } from "./state";
 
-import "./Editor.css";
-
 export default function Editor() {
 	const [_, setCode] = useAtom(codeAtom);
 
@@ -36,5 +34,5 @@ export default function Editor() {
 		}
 	}, [setCode]);
 
-	return <div className="container" ref={mount} />;
+	return <div className="h-full w-full" ref={mount} />;
 }
