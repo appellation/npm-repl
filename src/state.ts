@@ -1,8 +1,11 @@
 import { WebContainer } from "@webcontainer/api";
-import { atom } from "jotai";
+import { atom, getDefaultStore } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import { createHighlighter } from "shiki";
 
-export const codeAtom = atom("");
+export const codeAtom = atomWithStorage("code", "", undefined, {
+	getOnInit: true,
+});
 export const webContainerAtom = atom(() => WebContainer.boot());
 export const highlighterAtom = atom(() =>
 	createHighlighter({
@@ -10,3 +13,5 @@ export const highlighterAtom = atom(() =>
 		langs: ["javascript", "ansi"],
 	}),
 );
+
+export const store = getDefaultStore();

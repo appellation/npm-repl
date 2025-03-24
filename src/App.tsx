@@ -1,9 +1,9 @@
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import clsx from "clsx";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import Editor from "./Editor";
 import Output from "./Output";
 import Packages from "./Packages";
-import clsx from "clsx";
 
 const queryClient = new QueryClient();
 
