@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
-import { type FormEvent, useCallback, useState } from "react";
+import { type FormEvent, useCallback, useEffect, useState } from "react";
 import { Button, Form, Input, Label, TextField } from "react-aria-components";
 import AnsiCode from "./AnsiCode";
 import { webContainerAtom } from "./state";
@@ -26,10 +26,12 @@ export default function Packages() {
 	const [installOutput, setInstallOutput] = useState("");
 
 	const { mutate, isPending } = useMutation({
+		mutationKey: ["npm", "install"],
 		onMutate() {
 			setInstallOutput("");
 		},
 		async mutationFn(pkgName: string) {
+			console.log({ pkgName });
 			const process = await webContainer.spawn("npm", [
 				"--progress=false",
 				"install",
@@ -50,6 +52,14 @@ export default function Packages() {
 		},
 	});
 
+	useEffect(() => {
+		const params = window.location.pathname.slice(1);
+		if (!params) return;
+
+		const packages = params.split("&");
+		for (const pkgName of packages) mutate(pkgName);
+	}, [mutate]);
+
 	const handleAddPackage = useCallback(
 		(e: FormEvent<HTMLFormElement>) => {
 			e.preventDefault();
@@ -62,7 +72,7 @@ export default function Packages() {
 	);
 
 	return (
-		<div className="w-full overflow-auto box-border">
+		<div className="w-full overflow-auto h-full p-2">
 			<Form
 				onSubmit={handleAddPackage}
 				className="flex flex-row gap-2 w-full items-end"

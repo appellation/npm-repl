@@ -28,14 +28,14 @@ export default function Output() {
 	const runsAtom = useMemo(() => atom<PrimitiveAtom<Run>[]>([]), []);
 	const runs = useAtomValue(runsAtom);
 
-	const { mutate } = useMutation({
+	const { mutate, isPending } = useMutation({
 		async mutationFn(run: Run) {
 			const runAtom = atom(run);
-			store.set(runsAtom, (prev) => [...prev, runAtom]);
+			store.set(runsAtom, (prev) => [runAtom, ...prev]);
 
 			await webContainer.fs.writeFile("index.mjs", code);
 			const process = await webContainer.spawn("node", ["index.mjs"]);
-			await process.output.pipeTo(
+			process.output.pipeTo(
 				new WritableStream({
 					write(chunk) {
 						store.set(runAtom, (prev) => ({
@@ -45,6 +45,7 @@ export default function Output() {
 					},
 				}),
 			);
+			await process.exit;
 		},
 	});
 
@@ -66,8 +67,14 @@ export default function Output() {
 	});
 
 	return (
-		<div className="overflow-auto h-full flex flex-col-reverse">
-			<Button onPress={handleClick}>Run</Button>
+		<div className="overflow-auto h-full p-2">
+			<Button
+				onPress={handleClick}
+				className="w-full p-2 text-center bg-gray-200 hover:bg-gray-400 rounded"
+				isPending={isPending}
+			>
+				Run
+			</Button>
 			<div>
 				{runs.map((run) => (
 					<RunBlock key={run.toString()} run={run} />
